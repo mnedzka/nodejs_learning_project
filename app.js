@@ -1,9 +1,24 @@
-const http = require('http');
+const http = require("http");
+const express = require("express");
+const bodyParser = require("body-parser");
 
-const routes = require('./routes');
+const app = express(bodyParser.urlencoded());
 
-console.log(routes.someText);
+app.use("/add-product", (req, res, next) => {
+  console.log("in the middleware");
+  res.send(
+    '<form action="/product" method="POST"><input type="text" name="title" /><button type="submit">Add product</button></form>'
+  );
+});
 
-const server = http.createServer(routes.handler);
+app.use("/product", (req, res, next) => {
+  console.log("in the middleware");
+  res.redirect("/");
+});
 
-server.listen(3000);
+app.use("/", (req, res, next) => {
+  console.log("in the middleware");
+  res.send("<h1>Hello from express</h1>");
+});
+
+app.listen(3000);
