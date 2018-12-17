@@ -1,24 +1,17 @@
-const http = require("http");
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require("path");
 
-const app = express(bodyParser.urlencoded());
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
-app.use("/add-product", (req, res, next) => {
-  console.log("in the middleware");
-  res.send(
-    '<form action="/product" method="POST"><input type="text" name="title" /><button type="submit">Add product</button></form>'
-  );
-});
+const app = express(bodyParser.urlencoded({ extended: false }));
 
-app.use("/product", (req, res, next) => {
-  console.log("in the middleware");
-  res.redirect("/");
-});
+app.use("/admin", adminRoutes);
+app.use(shopRoutes);
 
-app.use("/", (req, res, next) => {
-  console.log("in the middleware");
-  res.send("<h1>Hello from express</h1>");
+app.use((req, res, next) => {
+  res.status(404).sendFile(path.join(__dirname, "views", "404.html"));
 });
 
 app.listen(3000);
